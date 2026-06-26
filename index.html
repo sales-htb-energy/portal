@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>営業ポータル</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    background: #F5F5F3;
+    color: #1a1a1a;
+    min-height: 100vh;
+    padding: 1.5rem;
+  }
+
+  /* ヘッダー */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    border: 0.5px solid #e0e0dc;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .logo {
+    width: 38px; height: 38px;
+    border-radius: 8px;
+    background: #1779DD;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo i { color: #fff; font-size: 20px; }
+  .header h1 { font-size: 17px; font-weight: 600; }
+  .header p { font-size: 12px; color: #888; margin-top: 1px; }
+  .date-badge {
+    font-size: 12px; color: #666;
+    background: #F5F5F3; padding: 6px 14px;
+    border-radius: 99px; border: 0.5px solid #e0e0dc;
+  }
+
+  /* グリッドレイアウト */
+  .grid-main { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  .grid-bottom { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; }
+
+  /* カード */
+  .card {
+    background: #fff;
+    border: 0.5px solid #e0e0dc;
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+  .card-header {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 0.5px solid #f0f0ee;
+  }
+  .card-header i { font-size: 16px; color: #999; }
+  .card-header h2 { font-size: 13px; font-weight: 600; color: #444; flex: 1; }
+  .badge {
+    font-size: 11px;
+    background: #EBF3FC; color: #1779DD;
+    padding: 2px 8px; border-radius: 99px;
+  }
+
+  /* お知らせ */
+  .news-item { padding: 9px 0; border-bottom: 0.5px solid #f0f0ee; cursor: pointer; }
+  .news-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .news-item:hover .news-title { color: #1779DD; }
+  .news-tag {
+    display: inline-block; font-size: 10px;
+    padding: 2px 7px; border-radius: 99px; margin-bottom: 4px;
+  }
+  .tag-alert { background: #FDECEA; color: #C0392B; }
+  .tag-info  { background: #EBF3FC; color: #1779DD; }
+  .tag-ok    { background: #E9F7EF; color: #1E8449; }
+  .news-title { font-size: 13px; line-height: 1.4; color: #222; }
+  .news-date  { font-size: 11px; color: #aaa; margin-top: 2px; }
+
+  /* KPI */
+  .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .kpi-card { background: #F8F8F6; border-radius: 8px; padding: 10px 12px; }
+  .kpi-label { font-size: 11px; color: #888; margin-bottom: 3px; }
+  .kpi-value { font-size: 22px; font-weight: 600; color: #1a1a1a; }
+  .kpi-sub   { font-size: 11px; margin-top: 2px; }
+  .up   { color: #1E8449; }
+  .down { color: #C0392B; }
+  .progress-row { display: flex; justify-content: space-between; font-size: 11px; color: #888; margin-top: 8px; }
+  .progress-bar { height: 4px; background: #eee; border-radius: 2px; overflow: hidden; margin-top: 4px; }
+  .progress-fill { height: 100%; background: #1779DD; border-radius: 2px; }
+
+  /* カレンダー */
+  .cal-wrap { display: flex; gap: 1.5rem; }
+  .cal { flex: 1; }
+  .cal-month { font-size: 13px; font-weight: 600; color: #444; margin-bottom: 10px; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .cal-dh { text-align: center; font-size: 10px; color: #aaa; padding: 3px 0; }
+  .cal-d {
+    text-align: center; font-size: 12px; padding: 6px 2px;
+    border-radius: 4px; cursor: pointer; color: #555;
+  }
+  .cal-d:hover { background: #F5F5F3; }
+  .cal-d.today { background: #1779DD; color: #fff; font-weight: 600; }
+  .cal-d.event { position: relative; }
+  .cal-d.event::after {
+    content: ''; position: absolute; bottom: 2px; left: 50%;
+    transform: translateX(-50%); width: 4px; height: 4px;
+    border-radius: 50%; background: #EF9F27;
+  }
+  .cal-d.dim { color: #ccc; }
+  .events { margin-top: 1rem; }
+  .event-item { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 0.5px solid #f0f0ee; }
+  .event-item:last-child { border-bottom: none; }
+  .event-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .event-text { font-size: 12px; color: #222; flex: 1; }
+  .event-time { font-size: 11px; color: #aaa; }
+
+  /* リンク集 */
+  .links-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .link-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; background: #F8F8F6;
+    border-radius: 8px; border: 0.5px solid #e8e8e4;
+    text-decoration: none; cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .link-item:hover { border-color: #bbb; background: #F0F0EE; }
+  .link-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .link-icon i { font-size: 16px; }
+  .link-label { font-size: 12px; font-weight: 600; color: #222; }
+  .link-desc  { font-size: 11px; color: #888; }
+
+  /* レスポンシブ */
+  @media (max-width: 760px) {
+    body { padding: 0.75rem; }
+    .grid-main, .grid-bottom { grid-template-columns: 1fr; }
+    .cal-wrap { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo"><i class="ti ti-building-store"></i></div>
+    <div>
+      <h1>営業ポータル</h1>
+      <p>Sales Team Dashboard</p>
+    </div>
+  </div>
+  <div class="date-badge" id="today-date"></div>
+</div>
+
+<div class="grid-main">
+  <!-- お知らせ -->
+  <div class="card">
+    <div class="card-header">
+      <i class="ti ti-bell"></i>
+      <h2>お知らせ</h2>
+      <span class="badge">3件</span>
+    </div>
+    <div class="news-item">
+      <span class="news-tag tag-alert">重要</span>
+      <div class="news-title">Q2 売上目標達成のための最終週対応について</div>
+      <div class="news-date">2026/06/24</div>
+    </div>
+    <div class="news-item">
+      <span class="news-tag tag-info">製品</span>
+      <div class="news-title">新製品ラインナップ資料を更新しました</div>
+      <div class="news-date">2026/06/22</div>
+    </div>
+    <div class="news-item">
+      <span class="news-tag tag-ok">社内</span>
+      <div class="news-title">6月度 MVP 社員表彰のお知らせ</div>
+      <div class="news-date">2026/06/20</div>
+    </div>
+  </div>
+
+  <!-- KPI -->
+  <div class="card">
+    <div class="card-header">
+      <i class="ti ti-chart-bar"></i>
+      <h2>今月の営業実績</h2>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">売上（百万円）</div>
+        <div class="kpi-value">84.2</div>
+        <div class="kpi-sub up">▲ 前月比 +12%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">新規顧客数</div>
+        <div class="kpi-value">23</div>
+        <div class="kpi-sub up">▲ 前月比 +5件</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">商談進行中</div>
+        <div class="kpi-value">47</div>
+        <div class="kpi-sub down">▼ 前月比 −3件</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">受注率</div>
+        <div class="kpi-value">38%</div>
+        <div class="kpi-sub up">▲ 目標 35%</div>
+      </div>
+    </div>
+    <div class="progress-row"><span>月次目標進捗</span><span>84.2 / 100M</span></div>
+    <div class="progress-bar"><div class="progress-fill" style="width:84%"></div></div>
+  </div>
+</div>
+
+<div class="grid-bottom">
+  <!-- カレンダー -->
+  <div class="card">
+    <div class="card-header">
+      <i class="ti ti-calendar"></i>
+      <h2>スケジュール</h2>
+    </div>
+    <div class="cal-wrap">
+      <div class="cal">
+        <div class="cal-month" id="cal-month"></div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+    </div>
+    <div class="events">
+      <div class="event-item">
+        <div class="event-dot" style="background:#1779DD"></div>
+        <div class="event-text">株式会社ABCサンプル — 最終商談</div>
+        <div class="event-time">本日 14:00</div>
+      </div>
+      <div class="event-item">
+        <div class="event-dot" style="background:#EF9F27"></div>
+        <div class="event-text">月次営業会議</div>
+        <div class="event-time">6/26 10:00</div>
+      </div>
+      <div class="event-item">
+        <div class="event-dot" style="background:#1E8449"></div>
+        <div class="event-text">新人研修（製品説明）</div>
+        <div class="event-time">6/30 13:00</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- リンク集 -->
+  <div class="card">
+    <div class="card-header">
+      <i class="ti ti-link"></i>
+      <h2>リンク集</h2>
+    </div>
+    <div class="links-grid">
+      <a class="link-item" href="#">
+        <div class="link-icon" style="background:#EBF3FC"><i class="ti ti-users" style="color:#1779DD"></i></div>
+        <div><div class="link-label">CRM</div><div class="link-desc">顧客管理</div></div>
+      </a>
+      <a class="link-item" href="#">
+        <div class="link-icon" style="background:#E9F7EF"><i class="ti ti-file-text" style="color:#1E8449"></i></div>
+        <div><div class="link-label">提案書テンプレ</div><div class="link-desc">書類一覧</div></div>
+      </a>
+      <a class="link-item" href="#">
+        <div class="link-icon" style="background:#FEF5E7"><i class="ti ti-chart-line" style="color:#D4881A"></i></div>
+        <div><div class="link-label">売上レポート</div><div class="link-desc">BIツール</div></div>
+      </a>
+      <a class="link-item" href="#">
+        <div class="link-icon" style="background:#FDECEA"><i class="ti ti-mail" style="color:#C0392B"></i></div>
+        <div><div class="link-label">メール</div><div class="link-desc">社内メール</div></div>
+      </a>
+      <a class="link-item" href="#">
+        <div class="link-icon" style="background:#F0EBF8"><i class="ti ti-calendar-event" style="color:#7D3C98"></i></div>
+        <div><div class="link-label">スケジュール</div><div class="link-desc">共有カレンダー</div></div>
+      </a>
+      <a class="link-item" href="#">
+        <div class="link-icon" style="background:#E1F5EE"><i class="ti ti-book" style="color:#0F6E56"></i></div>
+        <div><div class="link-label">社内Wiki</div><div class="link-desc">ナレッジベース</div></div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 今日の日付
+  const now = new Date();
+  const days = ['日','月','火','水','木','金','土'];
+  document.getElementById('today-date').textContent =
+    `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日（${days[now.getDay()]}）`;
+
+  // カレンダー生成
+  const year = now.getFullYear(), month = now.getMonth();
+  document.getElementById('cal-month').textContent = `${year}年${month+1}月`;
+  const grid = document.getElementById('cal-grid');
+  const headers = ['日','月','火','水','木','金','土'];
+  headers.forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'cal-dh'; el.textContent = d; grid.appendChild(el);
+  });
+  const eventDays = [6, 9, 12, 17, 20, 26];
+  const firstDay = new Date(year, month, 1).getDay();
+  const lastDate = new Date(year, month+1, 0).getDate();
+  const prevLast = new Date(year, month, 0).getDate();
+  for (let i = 0; i < firstDay; i++) {
+    const el = document.createElement('div');
+    el.className = 'cal-d dim'; el.textContent = prevLast - firstDay + 1 + i;
+    grid.appendChild(el);
+  }
+  for (let d = 1; d <= lastDate; d++) {
+    const el = document.createElement('div');
+    let cls = 'cal-d';
+    if (d === now.getDate()) cls += ' today';
+    else if (eventDays.includes(d)) cls += ' event';
+    el.className = cls; el.textContent = d;
+    grid.appendChild(el);
+  }
+</script>
+</body>
+</html>
