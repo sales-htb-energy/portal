@@ -3,332 +3,482 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>営業ポータル</title>
+<title>営業部ポータル</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy:    #0F2D5C;
+  --blue:    #1A5CB8;
+  --sky:     #3B82F6;
+  --teal:    #0D7A6E;
+  --bg:      #F4F6FA;
+  --surface: #FFFFFF;
+  --border:  #E4E8F0;
+  --text-1:  #0D1B2A;
+  --text-2:  #4A5568;
+  --text-3:  #9AA5B4;
+  --danger:  #DC2626;
+  --warn:    #D97706;
+  --ok:      #16A34A;
+  --radius:  10px;
+  --shadow:  0 1px 3px rgba(15,45,92,.06), 0 4px 12px rgba(15,45,92,.04);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Noto Sans JP', 'Inter', -apple-system, sans-serif;
+  background: var(--bg); color: var(--text-1);
+  min-height: 100vh; font-size: 15px; line-height: 1.6;
+}
+.topbar {
+  background: var(--navy); padding: 0 2rem; height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.topbar-icon {
+  width: 30px; height: 30px; background: var(--sky); border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+}
+.topbar-icon i { color: #fff; font-size: 16px; }
+.topbar-title { font-size: 15px; font-weight: 600; color: #fff; letter-spacing: 0.02em; }
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+.topbar-date { font-size: 13px; color: rgba(255,255,255,0.6); }
+.topbar-divider { width: 1px; height: 16px; background: rgba(255,255,255,0.15); }
+.topbar-user {
+  width: 30px; height: 30px; border-radius: 50%; background: var(--sky);
+  display: flex; align-items: center; justify-content: center;
+}
+.topbar-user i { color: #fff; font-size: 15px; }
+.page { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+.sec-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; }
+.sec-title { font-size: 19px; font-weight: 700; color: var(--navy); letter-spacing: -0.02em; }
+.sec-count { font-size: 13px; color: var(--text-3); margin-left: auto; }
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+}
+.section { margin-bottom: 2.5rem; }
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-    background: #F0F2F5;
-    color: #1a1a1a;
-    min-height: 100vh;
-    padding: 1.5rem;
-  }
+/* お知らせ */
+.news-list { padding: 0 1.5rem; }
+.news-row {
+  display: grid; grid-template-columns: auto 1fr auto;
+  align-items: start; gap: 14px; padding: 16px 0;
+  border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s;
+}
+.news-row:last-child { border-bottom: none; }
+.news-row:hover { background: #F8FAFF; margin: 0 -1.5rem; padding-left: 1.5rem; padding-right: 1.5rem; }
+.tag {
+  display: inline-flex; align-items: center;
+  font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 4px;
+  white-space: nowrap; margin-top: 2px; letter-spacing: 0.04em;
+}
+.tag-重要 { background: #FEF2F2; color: var(--danger); }
+.tag-製品 { background: #EFF6FF; color: var(--blue); }
+.tag-社内 { background: #F0FDF4; color: var(--ok); }
+.tag-default { background: #F3F4F6; color: var(--text-2); }
+.news-title { font-size: 15px; font-weight: 500; color: var(--text-1); line-height: 1.5; }
+.news-row:hover .news-title { color: var(--blue); }
+.news-date { font-size: 13px; color: var(--text-3); margin-top: 2px; white-space: nowrap; }
+.news-empty { padding: 2rem; text-align: center; color: var(--text-3); font-size: 14px; }
 
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #fff;
-    border: 0.5px solid #e0e0dc;
-    border-radius: 12px;
-    padding: 1rem 1.5rem;
-    margin-bottom: 1.25rem;
-  }
-  .header-left { display: flex; align-items: center; gap: 12px; }
-  .logo {
-    width: 38px; height: 38px;
-    border-radius: 8px;
-    background: #1557A0;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .logo i { color: #fff; font-size: 20px; }
-  .header-title { font-size: 16px; font-weight: 600; color: #1557A0; }
-  .header-sub { font-size: 12px; color: #999; margin-top: 1px; }
-  .date-badge {
-    font-size: 12px; color: #666;
-    background: #F0F2F5; padding: 6px 14px;
-    border-radius: 99px; border: 0.5px solid #e0e0dc;
-  }
+/* 営業実績 */
+.kpi-two-col { display: grid; grid-template-columns: 1fr 1fr; }
+.kpi-segment { padding: 1.5rem; }
+.kpi-segment:first-child { border-right: 1px solid var(--border); }
+.kpi-seg-head {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--border);
+}
+.kpi-seg-bar { width: 5px; height: 24px; border-radius: 3px; flex-shrink: 0; }
+.kpi-seg-name { font-size: 18px; font-weight: 700; letter-spacing: 0.01em; }
+.kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.kpi-tile {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px; position: relative; overflow: hidden;
+}
+.kpi-tile::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.kpi-tile.c-blue::before { background: var(--blue); }
+.kpi-tile.c-teal::before { background: var(--teal); }
+.kpi-lbl { font-size: 12px; color: var(--text-2); font-weight: 500; margin-bottom: 8px; line-height: 1.4; }
+.kpi-val { font-size: 26px; font-weight: 700; color: var(--text-1); line-height: 1; }
+.kpi-unit { font-size: 14px; font-weight: 500; color: var(--text-2); margin-left: 4px; }
 
-  .section-title {
-    font-size: 17px;
-    font-weight: 700;
-    color: #1557A0;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    letter-spacing: -0.01em;
-  }
-  .section-title i { font-size: 18px; }
-  .section-title .title-bar {
-    width: 4px; height: 20px;
-    background: #1557A0;
-    border-radius: 2px;
-    flex-shrink: 0;
-  }
+/* 資料格納 */
+.links-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+.link-cell {
+  display: flex; align-items: center; gap: 14px; padding: 20px 22px;
+  background: var(--surface); text-decoration: none; cursor: pointer; transition: background 0.15s;
+}
+.link-cell:hover { background: #F8FAFF; }
+.link-ico { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.link-ico i { font-size: 19px; }
+.link-name { font-size: 14px; font-weight: 600; color: var(--text-1); }
+.link-desc { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+.link-arrow { margin-left: auto; color: var(--text-3); font-size: 15px; }
 
-  .card {
-    background: #fff;
-    border: 0.5px solid #e0e0dc;
-    border-radius: 12px;
-    padding: 1.25rem;
-  }
+/* スケジュール */
+.schedule-wrap { display: grid; grid-template-columns: auto 1fr; }
+.cal-panel { padding: 1.5rem; border-right: 1px solid var(--border); min-width: 230px; }
+.cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.cal-nav-month { font-size: 15px; font-weight: 700; color: var(--navy); }
+.cal-table { width: 100%; border-collapse: collapse; }
+.cal-table th { text-align: center; font-size: 11px; font-weight: 600; color: var(--text-3); padding: 5px 0; }
+.cal-table td { text-align: center; font-size: 13px; padding: 6px 2px; color: var(--text-2); cursor: pointer; border-radius: 4px; }
+.cal-table td:hover { background: var(--bg); }
+.cal-table td.today { background: var(--blue); color: #fff; font-weight: 700; border-radius: 6px; }
+.cal-table td.has-ev { position: relative; }
+.cal-table td.has-ev::after {
+  content: ''; position: absolute; bottom: 1px; left: 50%; transform: translateX(-50%);
+  width: 4px; height: 4px; border-radius: 50%; background: var(--warn);
+}
+.cal-table td.dim { color: var(--border); }
+.events-panel { padding: 1.5rem; }
+.events-title { font-size: 12px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+.ev-item { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.ev-item:last-child { border-bottom: none; }
+.ev-time-col { text-align: right; min-width: 64px; flex-shrink: 0; }
+.ev-date-lbl { font-size: 11px; color: var(--text-3); font-weight: 500; }
+.ev-time-lbl { font-size: 14px; font-weight: 600; color: var(--text-2); }
+.ev-bar { width: 3px; border-radius: 2px; flex-shrink: 0; margin: 2px 0; }
+.ev-body { flex: 1; }
+.ev-name { font-size: 14px; font-weight: 500; color: var(--text-1); }
+.ev-sub { font-size: 12px; color: var(--text-3); margin-top: 3px; }
+.ev-empty { padding: 2rem; text-align: center; color: var(--text-3); font-size: 14px; }
 
-  .news-item { padding: 9px 0; border-bottom: 0.5px solid #f0f0ee; cursor: pointer; }
-  .news-item:last-child { border-bottom: none; padding-bottom: 0; }
-  .news-item:hover .news-title { color: #1557A0; }
-  .news-tag {
-    display: inline-block; font-size: 10px;
-    padding: 2px 7px; border-radius: 99px; margin-bottom: 4px;
-  }
-  .tag-alert { background: #FDECEA; color: #C0392B; }
-  .tag-info  { background: #E8F0FE; color: #1557A0; }
-  .tag-ok    { background: #E9F7EF; color: #1E8449; }
-  .news-title { font-size: 13px; line-height: 1.4; color: #222; }
-  .news-date  { font-size: 11px; color: #aaa; margin-top: 2px; }
-
-  .kpi-group { margin-bottom: 1rem; }
-  .kpi-group:last-child { margin-bottom: 0; }
-  .kpi-group-title {
-    font-size: 13px; font-weight: 700; color: #fff;
-    padding: 6px 12px; border-radius: 6px; margin-bottom: 10px;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .kpi-group-title.high { background: #1557A0; }
-  .kpi-group-title.low  { background: #0E7A5E; }
-  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-  .kpi-card { background: #F6F8FB; border-radius: 8px; padding: 10px 12px; border: 0.5px solid #e8eaf0; }
-  .kpi-label { font-size: 10px; color: #888; margin-bottom: 4px; line-height: 1.3; }
-  .kpi-value { font-size: 18px; font-weight: 700; color: #1a1a1a; }
-  .kpi-unit  { font-size: 11px; font-weight: 400; color: #888; margin-left: 2px; }
-
-  .cal-month { font-size: 13px; font-weight: 600; color: #444; margin-bottom: 10px; }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
-  .cal-dh { text-align: center; font-size: 10px; color: #aaa; padding: 3px 0; }
-  .cal-d { text-align: center; font-size: 12px; padding: 6px 2px; border-radius: 4px; cursor: pointer; color: #555; }
-  .cal-d:hover { background: #F0F2F5; }
-  .cal-d.today { background: #1557A0; color: #fff; font-weight: 600; }
-  .cal-d.event { position: relative; }
-  .cal-d.event::after {
-    content: ''; position: absolute; bottom: 2px; left: 50%;
-    transform: translateX(-50%); width: 4px; height: 4px;
-    border-radius: 50%; background: #EF9F27;
-  }
-  .cal-d.dim { color: #ccc; }
-  .events { margin-top: 1rem; }
-  .event-item { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 0.5px solid #f0f0ee; }
-  .event-item:last-child { border-bottom: none; }
-  .event-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .event-text { font-size: 12px; color: #222; flex: 1; }
-  .event-time { font-size: 11px; color: #aaa; }
-
-  .links-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .link-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px 12px; background: #F6F8FB;
-    border-radius: 8px; border: 0.5px solid #e8eaf0;
-    text-decoration: none; cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
-  }
-  .link-item:hover { border-color: #1557A0; background: #EEF3FB; }
-  .link-icon {
-    width: 32px; height: 32px; border-radius: 8px;
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  }
-  .link-icon i { font-size: 16px; }
-  .link-label { font-size: 12px; font-weight: 600; color: #222; }
-  .link-desc  { font-size: 11px; color: #888; }
-
-  @media (max-width: 760px) {
-    body { padding: 0.75rem; }
-    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-  }
+@media (max-width: 768px) {
+  .topbar { padding: 0 1rem; }
+  .page { padding: 1.25rem 1rem; }
+  .kpi-two-col { grid-template-columns: 1fr; }
+  .kpi-segment:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+  .links-grid { grid-template-columns: repeat(2, 1fr); }
+  .schedule-wrap { grid-template-columns: 1fr; }
+  .cal-panel { border-right: none; border-bottom: 1px solid var(--border); }
+}
+@media (max-width: 480px) {
+  .links-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
 
-<!-- ヘッダー -->
-<div class="header">
-  <div class="header-left">
-    <div class="logo"><i class="ti ti-bolt"></i></div>
-    <div>
-      <div class="header-title">営業部ポータル</div>
-      <div class="header-sub">Sales Portal</div>
-    </div>
+<nav class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-icon"><i class="ti ti-bolt"></i></div>
+    <span class="topbar-title">営業部ポータル</span>
   </div>
-  <div class="date-badge" id="today-date"></div>
-</div>
+  <div class="topbar-right">
+    <span class="topbar-date" id="today-date"></span>
+    <div class="topbar-divider"></div>
+    <div class="topbar-user"><i class="ti ti-user"></i></div>
+  </div>
+</nav>
 
-<!-- お知らせ -->
-<div style="margin-bottom: 1.25rem;">
-  <div class="section-title">
-    <span class="title-bar"></span>
-    <i class="ti ti-bell"></i>お知らせ
-  </div>
-  <div class="card">
-    <div class="news-item">
-      <span class="news-tag tag-alert">重要</span>
-      <div class="news-title">Q2 売上目標達成のための最終週対応について</div>
-      <div class="news-date">2026/06/24</div>
-    </div>
-    <div class="news-item">
-      <span class="news-tag tag-info">製品</span>
-      <div class="news-title">新製品ラインナップ資料を更新しました</div>
-      <div class="news-date">2026/06/22</div>
-    </div>
-    <div class="news-item">
-      <span class="news-tag tag-ok">社内</span>
-      <div class="news-title">6月度 MVP 社員表彰のお知らせ</div>
-      <div class="news-date">2026/06/20</div>
-    </div>
-  </div>
-</div>
+<main class="page">
 
-<!-- 営業実績 -->
-<div style="margin-bottom: 1.25rem;">
-  <div class="section-title">
-    <span class="title-bar"></span>
-    <i class="ti ti-chart-bar"></i><span id="kpi-month-title">今月の営業実績</span>
-  </div>
-  <div class="card">
-    <div class="kpi-group">
-      <div class="kpi-group-title high"><i class="ti ti-bolt"></i> 高圧</div>
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="kpi-label">ストックアップ</div>
-          <div class="kpi-value">42,500<span class="kpi-unit">万円</span></div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">契約 kW</div>
-          <div class="kpi-value">8,320<span class="kpi-unit">kW</span></div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">拠点数</div>
-          <div class="kpi-value">134<span class="kpi-unit">拠点</span></div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">5年将来収益</div>
-          <div class="kpi-value">210,000<span class="kpi-unit">万円</span></div>
-        </div>
+  <!-- お知らせ -->
+  <section class="section">
+    <div class="sec-head">
+      <h2 class="sec-title">お知らせ</h2>
+      <span class="sec-count" id="news-count"></span>
+    </div>
+    <div class="card">
+      <div class="news-list" id="news-list">
+        <div class="news-empty">読み込み中…</div>
       </div>
     </div>
-    <div class="kpi-group">
-      <div class="kpi-group-title low"><i class="ti ti-building"></i> 低圧法人</div>
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="kpi-label">ストックアップ</div>
-          <div class="kpi-value">18,200<span class="kpi-unit">万円</span></div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">契約 kW</div>
-          <div class="kpi-value">3,480<span class="kpi-unit">kW</span></div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">拠点数</div>
-          <div class="kpi-value">287<span class="kpi-unit">拠点</span></div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">5年将来収益</div>
-          <div class="kpi-value">91,000<span class="kpi-unit">万円</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+  </section>
 
-<!-- 資料格納リンク集 -->
-<div style="margin-bottom: 1.25rem;">
-  <div class="section-title">
-    <span class="title-bar"></span>
-    <i class="ti ti-folder"></i>資料格納リンク集
-  </div>
-  <div class="card">
-    <div class="links-grid">
-      <a class="link-item" href="#">
-        <div class="link-icon" style="background:#E8F0FE"><i class="ti ti-file-text" style="color:#1557A0"></i></div>
-        <div><div class="link-label">提案書テンプレート</div><div class="link-desc">高圧・低圧共通</div></div>
-      </a>
-      <a class="link-item" href="#">
-        <div class="link-icon" style="background:#E9F7EF"><i class="ti ti-table" style="color:#1E8449"></i></div>
-        <div><div class="link-label">料金シミュレーション</div><div class="link-desc">Excel / スプレッドシート</div></div>
-      </a>
-      <a class="link-item" href="#">
-        <div class="link-icon" style="background:#FEF5E7"><i class="ti ti-presentation" style="color:#D4881A"></i></div>
-        <div><div class="link-label">会社案内・製品資料</div><div class="link-desc">最新版スライド</div></div>
-      </a>
-      <a class="link-item" href="#">
-        <div class="link-icon" style="background:#E8F8F5"><i class="ti ti-contract" style="color:#0E7A5E"></i></div>
-        <div><div class="link-label">契約書・申込書類</div><div class="link-desc">各種フォーム</div></div>
-      </a>
-      <a class="link-item" href="#">
-        <div class="link-icon" style="background:#FDECEA"><i class="ti ti-report-analytics" style="color:#C0392B"></i></div>
-        <div><div class="link-label">営業実績レポート</div><div class="link-desc">月次・四半期</div></div>
-      </a>
-      <a class="link-item" href="#">
-        <div class="link-icon" style="background:#F0EBF8"><i class="ti ti-book" style="color:#7D3C98"></i></div>
-        <div><div class="link-label">マニュアル・規程</div><div class="link-desc">社内ナレッジ</div></div>
-      </a>
+  <!-- 営業実績 -->
+  <section class="section">
+    <div class="sec-head">
+      <h2 class="sec-title" id="kpi-title">営業実績</h2>
     </div>
-  </div>
-</div>
+    <div class="card">
+      <div class="kpi-two-col">
+        <div class="kpi-segment">
+          <div class="kpi-seg-head">
+            <div class="kpi-seg-bar" style="background:var(--blue)"></div>
+            <span class="kpi-seg-name" style="color:var(--blue)">高圧</span>
+          </div>
+          <div class="kpi-grid">
+            <div class="kpi-tile c-blue">
+              <div class="kpi-lbl">ストックアップ</div>
+              <div class="kpi-val"><span id="kpi-high-stock">—</span><span class="kpi-unit">円</span></div>
+            </div>
+            <div class="kpi-tile c-blue">
+              <div class="kpi-lbl">契約 kW</div>
+              <div class="kpi-val"><span id="kpi-high-kw">—</span><span class="kpi-unit">kW</span></div>
+            </div>
+            <div class="kpi-tile c-blue">
+              <div class="kpi-lbl">拠点数</div>
+              <div class="kpi-val"><span id="kpi-high-base">—</span><span class="kpi-unit">拠点</span></div>
+            </div>
+            <div class="kpi-tile c-blue">
+              <div class="kpi-lbl">5年将来収益</div>
+              <div class="kpi-val"><span id="kpi-high-future">—</span><span class="kpi-unit">円</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="kpi-segment">
+          <div class="kpi-seg-head">
+            <div class="kpi-seg-bar" style="background:var(--teal)"></div>
+            <span class="kpi-seg-name" style="color:var(--teal)">低圧法人</span>
+          </div>
+          <div class="kpi-grid">
+            <div class="kpi-tile c-teal">
+              <div class="kpi-lbl">ストックアップ</div>
+              <div class="kpi-val"><span id="kpi-low-stock">—</span><span class="kpi-unit">円</span></div>
+            </div>
+            <div class="kpi-tile c-teal">
+              <div class="kpi-lbl">拠点数</div>
+              <div class="kpi-val"><span id="kpi-low-base">—</span><span class="kpi-unit">拠点</span></div>
+            </div>
+            <div class="kpi-tile c-teal">
+              <div class="kpi-lbl">5年将来収益</div>
+              <div class="kpi-val"><span id="kpi-low-future">—</span><span class="kpi-unit">円</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<!-- スケジュール -->
-<div style="margin-bottom: 1.25rem;">
-  <div class="section-title">
-    <span class="title-bar"></span>
-    <i class="ti ti-calendar"></i>スケジュール
-  </div>
-  <div class="card">
-    <div class="cal-month" id="cal-month"></div>
-    <div class="cal-grid" id="cal-grid"></div>
-    <div class="events">
-      <div class="event-item">
-        <div class="event-dot" style="background:#1557A0"></div>
-        <div class="event-text">株式会社ABCサンプル — 最終商談</div>
-        <div class="event-time">本日 14:00</div>
-      </div>
-      <div class="event-item">
-        <div class="event-dot" style="background:#EF9F27"></div>
-        <div class="event-text">月次営業会議</div>
-        <div class="event-time">6/26 10:00</div>
-      </div>
-      <div class="event-item">
-        <div class="event-dot" style="background:#0E7A5E"></div>
-        <div class="event-text">新人研修（製品説明）</div>
-        <div class="event-time">6/30 13:00</div>
+  <!-- 資料格納リンク集 -->
+  <section class="section">
+    <div class="sec-head">
+      <h2 class="sec-title">資料格納リンク集</h2>
+    </div>
+    <div class="card">
+      <div class="links-grid" id="links-grid">
+        <div style="padding:2rem;text-align:center;color:var(--text-3);font-size:14px;grid-column:span 3">読み込み中…</div>
       </div>
     </div>
-  </div>
-</div>
+  </section>
+
+  <!-- フロー別格納資料 -->
+  <section class="section">
+    <div class="sec-head">
+      <h2 class="sec-title">フロー別格納資料</h2>
+    </div>
+    <div class="card">
+      <div class="links-grid" id="flow-grid">
+        <div style="padding:2rem;text-align:center;color:var(--text-3);font-size:14px;grid-column:span 3">読み込み中…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- スケジュール -->
+  <section class="section">
+    <div class="sec-head">
+      <h2 class="sec-title">スケジュール</h2>
+    </div>
+    <div class="card">
+      <div class="schedule-wrap">
+        <div class="cal-panel">
+          <div class="cal-nav">
+            <span class="cal-nav-month" id="cal-month-label"></span>
+          </div>
+          <table class="cal-table" id="cal-table"></table>
+        </div>
+        <div class="events-panel">
+          <div class="events-title">直近の予定</div>
+          <div id="events-list"><div class="ev-empty">読み込み中…</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
 
 <script>
+  const SHEET_ID = '1ajIdOpxMbJqcvVJKxr9ZQY0ILIpGBkeWPYKDl5dAH_k';
+  const API_KEY  = 'AIzaSyCbbtvRUpkn7e29d9HGj8yalSS0LY4TmaU';
+
   const now = new Date();
-  const days = ['日','月','火','水','木','金','土'];
-  const monthNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  const DAYS   = ['日','月','火','水','木','金','土'];
+  const MONTHS = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  const currentMonth = now.getMonth() + 1;
 
   document.getElementById('today-date').textContent =
-    `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日（${days[now.getDay()]}）`;
+    `${now.getFullYear()}年${currentMonth}月${now.getDate()}日（${DAYS[now.getDay()]}）`;
+  document.getElementById('kpi-title').textContent =
+    `${MONTHS[now.getMonth()]}の営業実績`;
 
-  document.getElementById('kpi-month-title').textContent =
-    `${monthNames[now.getMonth()]}の営業実績`;
-
-  const year = now.getFullYear(), month = now.getMonth();
-  document.getElementById('cal-month').textContent = `${year}年${month+1}月`;
-  const grid = document.getElementById('cal-grid');
-  ['日','月','火','水','木','金','土'].forEach(d => {
-    const el = document.createElement('div');
-    el.className = 'cal-dh'; el.textContent = d; grid.appendChild(el);
-  });
-  const eventDays = [6, 9, 12, 17, 20, 26];
-  const firstDay = new Date(year, month, 1).getDay();
-  const lastDate = new Date(year, month+1, 0).getDate();
-  const prevLast = new Date(year, month, 0).getDate();
+  const y = now.getFullYear(), m = now.getMonth();
+  document.getElementById('cal-month-label').textContent = `${y}年${m+1}月`;
+  const firstDay = new Date(y, m, 1).getDay();
+  const lastDate = new Date(y, m+1, 0).getDate();
+  const prevLast = new Date(y, m, 0).getDate();
+  const tbl = document.getElementById('cal-table');
+  let calHtml = '<thead><tr>';
+  DAYS.forEach(d => calHtml += `<th>${d}</th>`);
+  calHtml += '</tr></thead><tbody><tr>';
+  let col = 0;
   for (let i = 0; i < firstDay; i++) {
-    const el = document.createElement('div');
-    el.className = 'cal-d dim'; el.textContent = prevLast - firstDay + 1 + i;
-    grid.appendChild(el);
+    calHtml += `<td class="dim">${prevLast - firstDay + 1 + i}</td>`; col++;
   }
   for (let d = 1; d <= lastDate; d++) {
-    const el = document.createElement('div');
-    let cls = 'cal-d';
-    if (d === now.getDate()) cls += ' today';
-    else if (eventDays.includes(d)) cls += ' event';
-    el.className = cls; el.textContent = d;
-    grid.appendChild(el);
+    if (col === 7) { calHtml += '</tr><tr>'; col = 0; }
+    let cls = d === now.getDate() ? 'today' : '';
+    calHtml += `<td class="${cls}">${d}</td>`; col++;
   }
+  while (col < 7 && col > 0) { calHtml += `<td class="dim"></td>`; col++; }
+  calHtml += '</tr></tbody>';
+  tbl.innerHTML = calHtml;
+
+  async function fetchSheet(sheetName) {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(sheetName)}?key=${API_KEY}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    return (data.values || []).slice(1);
+  }
+
+  function fmt(num) {
+    if (num === null || isNaN(num)) return '—';
+    return Math.round(num).toLocaleString('ja-JP');
+  }
+
+  const COLOR_MAP = {
+    blue:   { bg: '#EFF6FF', fg: '#1A5CB8' },
+    green:  { bg: '#F0FDF4', fg: '#16A34A' },
+    yellow: { bg: '#FFFBEB', fg: '#D97706' },
+    teal:   { bg: '#F0FDFA', fg: '#0D7A6E' },
+    red:    { bg: '#FEF2F2', fg: '#DC2626' },
+    purple: { bg: '#F5F3FF', fg: '#7C3AED' },
+  };
+  const EV_COLOR_MAP = {
+    blue: 'var(--blue)', yellow: 'var(--warn)', teal: 'var(--teal)',
+    red: 'var(--danger)', green: 'var(--ok)', purple: '#7C3AED',
+  };
+
+  async function loadNews() {
+    try {
+      const rows = await fetchSheet('お知らせ');
+      const visible = rows.filter(r => (r[3] || '').trim() !== '非表示' && r[2]);
+      const list = document.getElementById('news-list');
+      const count = document.getElementById('news-count');
+      if (visible.length === 0) {
+        list.innerHTML = '<div class="news-empty">お知らせはありません</div>';
+        return;
+      }
+      count.textContent = `${visible.length}件`;
+      list.innerHTML = visible.map(r => {
+        const tag = (r[1] || '').trim();
+        return `<div class="news-row">
+          <span class="tag tag-${tag || 'default'}">${tag || '情報'}</span>
+          <div class="news-body"><div class="news-title">${r[2] || ''}</div></div>
+          <div class="news-date">${r[0] || ''}</div>
+        </div>`;
+      }).join('');
+    } catch(e) {
+      document.getElementById('news-list').innerHTML = '<div class="news-empty">読み込みエラー</div>';
+    }
+  }
+
+  async function loadKpi() {
+    try {
+      const rows = await fetchSheet('営業実績');
+      rows.forEach(r => {
+        const item = (r[0] || '').trim();
+        const val  = parseFloat((r[1] || '0').replace(/,/g,'')) || 0;
+        const ku   = (r[3] || '').trim();
+        const id = ku === '高圧' ? {
+          'ストックアップ': 'kpi-high-stock',
+          '契約kW': 'kpi-high-kw',
+          '拠点数': 'kpi-high-base',
+          '5年将来収益': 'kpi-high-future',
+        }[item] : {
+          'ストックアップ': 'kpi-low-stock',
+          '拠点数': 'kpi-low-base',
+          '5年将来収益': 'kpi-low-future',
+        }[item];
+        if (id) document.getElementById(id).textContent = fmt(val);
+      });
+    } catch(e) {
+      ['kpi-high-stock','kpi-high-kw','kpi-high-base','kpi-high-future',
+       'kpi-low-stock','kpi-low-base','kpi-low-future'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = 'エラー';
+      });
+    }
+  }
+
+  function buildLinkGrid(rows, gridId) {
+    const grid = document.getElementById(gridId);
+    if (rows.length === 0) {
+      grid.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-3);grid-column:span 3">データがありません</div>';
+      return;
+    }
+    grid.innerHTML = rows.filter(r => r[0]).map(r => {
+      const color = COLOR_MAP[r[4]] || COLOR_MAP.blue;
+      return `<a class="link-cell" href="${r[2] || '#'}" target="_blank">
+        <div class="link-ico" style="background:${color.bg}">
+          <i class="ti ti-${r[3] || 'link'}" style="color:${color.fg}"></i>
+        </div>
+        <div>
+          <div class="link-name">${r[0] || ''}</div>
+          <div class="link-desc">${r[1] || ''}</div>
+        </div>
+        <i class="ti ti-chevron-right link-arrow"></i>
+      </a>`;
+    }).join('');
+  }
+
+  async function loadLinks() {
+    try {
+      buildLinkGrid(await fetchSheet('リンク集'), 'links-grid');
+    } catch(e) {
+      document.getElementById('links-grid').innerHTML =
+        '<div style="padding:2rem;text-align:center;color:var(--text-3);grid-column:span 3">読み込みエラー</div>';
+    }
+  }
+
+  async function loadFlow() {
+    try {
+      buildLinkGrid(await fetchSheet('フロー別格納資料'), 'flow-grid');
+    } catch(e) {
+      document.getElementById('flow-grid').innerHTML =
+        '<div style="padding:2rem;text-align:center;color:var(--text-3);grid-column:span 3">読み込みエラー</div>';
+    }
+  }
+
+  async function loadSchedule() {
+    try {
+      const rows = await fetchSheet('スケジュール');
+      const list = document.getElementById('events-list');
+      if (rows.length === 0) {
+        list.innerHTML = '<div class="ev-empty">予定はありません</div>';
+        return;
+      }
+      list.innerHTML = rows.filter(r => r[2]).map(r => {
+        const barColor = EV_COLOR_MAP[r[4]] || 'var(--blue)';
+        return `<div class="ev-item">
+          <div class="ev-time-col">
+            <div class="ev-date-lbl">${r[0] || ''}</div>
+            <div class="ev-time-lbl">${r[1] || ''}</div>
+          </div>
+          <div class="ev-bar" style="background:${barColor}"></div>
+          <div class="ev-body">
+            <div class="ev-name">${r[2] || ''}</div>
+            <div class="ev-sub">${r[3] || ''}</div>
+          </div>
+        </div>`;
+      }).join('');
+    } catch(e) {
+      document.getElementById('events-list').innerHTML = '<div class="ev-empty">読み込みエラー</div>';
+    }
+  }
+
+  loadNews();
+  loadKpi();
+  loadLinks();
+  loadFlow();
+  loadSchedule();
 </script>
 </body>
 </html>
