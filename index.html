@@ -121,10 +121,13 @@ body {
 .link-arrow { margin-left: auto; color: var(--text-3); font-size: 15px; }
 
 /* スケジュール */
+.month-tabs { display: flex; gap: 6px; padding: 14px 20px; border-bottom: 1px solid var(--border); overflow-x: auto; flex-wrap: wrap; }
+.month-tab { font-size: 13px; font-weight: 500; padding: 6px 16px; border-radius: 99px; border: 1px solid var(--border); background: transparent; color: var(--text-2); cursor: pointer; white-space: nowrap; transition: all 0.15s; }
+.month-tab:hover { background: var(--bg); color: var(--text-1); }
+.month-tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
 .schedule-wrap { display: grid; grid-template-columns: auto 1fr; }
 .cal-panel { padding: 1.5rem; border-right: 1px solid var(--border); min-width: 230px; }
-.cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.cal-nav-month { font-size: 15px; font-weight: 700; color: var(--navy); }
+.cal-nav-month { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 12px; }
 .cal-table { width: 100%; border-collapse: collapse; }
 .cal-table th { text-align: center; font-size: 11px; font-weight: 600; color: var(--text-3); padding: 5px 0; }
 .cal-table td { text-align: center; font-size: 13px; padding: 6px 2px; color: var(--text-2); cursor: pointer; border-radius: 4px; }
@@ -136,8 +139,8 @@ body {
   width: 4px; height: 4px; border-radius: 50%; background: var(--warn);
 }
 .cal-table td.dim { color: var(--border); }
-.events-panel { padding: 1.5rem; }
-.events-title { font-size: 12px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+.events-panel { padding: 1.5rem; overflow-y: auto; }
+.events-title { font-size: 13px; font-weight: 700; color: var(--text-3); margin-bottom: 14px; }
 .ev-item { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border); }
 .ev-item:last-child { border-bottom: none; }
 .ev-time-col { text-align: right; min-width: 64px; flex-shrink: 0; }
@@ -277,15 +280,14 @@ body {
       <h2 class="sec-title">スケジュール</h2>
     </div>
     <div class="card">
+      <div class="month-tabs" id="month-tabs"></div>
       <div class="schedule-wrap">
         <div class="cal-panel">
-          <div class="cal-nav">
-            <span class="cal-nav-month" id="cal-month-label"></span>
-          </div>
+          <div class="cal-nav-month" id="cal-month-label"></div>
           <table class="cal-table" id="cal-table"></table>
         </div>
         <div class="events-panel">
-          <div class="events-title">直近の予定</div>
+          <div class="events-title" id="events-title">月の予定</div>
           <div id="events-list"><div class="ev-empty">読み込み中…</div></div>
         </div>
       </div>
@@ -307,28 +309,6 @@ body {
     `${now.getFullYear()}年${currentMonth}月${now.getDate()}日（${DAYS[now.getDay()]}）`;
   document.getElementById('kpi-title').textContent =
     `${MONTHS[now.getMonth()]}の営業実績`;
-
-  const y = now.getFullYear(), m = now.getMonth();
-  document.getElementById('cal-month-label').textContent = `${y}年${m+1}月`;
-  const firstDay = new Date(y, m, 1).getDay();
-  const lastDate = new Date(y, m+1, 0).getDate();
-  const prevLast = new Date(y, m, 0).getDate();
-  const tbl = document.getElementById('cal-table');
-  let calHtml = '<thead><tr>';
-  DAYS.forEach(d => calHtml += `<th>${d}</th>`);
-  calHtml += '</tr></thead><tbody><tr>';
-  let col = 0;
-  for (let i = 0; i < firstDay; i++) {
-    calHtml += `<td class="dim">${prevLast - firstDay + 1 + i}</td>`; col++;
-  }
-  for (let d = 1; d <= lastDate; d++) {
-    if (col === 7) { calHtml += '</tr><tr>'; col = 0; }
-    let cls = d === now.getDate() ? 'today' : '';
-    calHtml += `<td class="${cls}">${d}</td>`; col++;
-  }
-  while (col < 7 && col > 0) { calHtml += `<td class="dim"></td>`; col++; }
-  calHtml += '</tr></tbody>';
-  tbl.innerHTML = calHtml;
 
   async function fetchSheet(sheetName) {
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(sheetName)}?key=${API_KEY}`;
@@ -430,45 +410,95 @@ body {
   }
 
   async function loadLinks() {
-    try {
-      buildLinkGrid(await fetchSheet('リンク集'), 'links-grid');
-    } catch(e) {
-      document.getElementById('links-grid').innerHTML =
-        '<div style="padding:2rem;text-align:center;color:var(--text-3);grid-column:span 3">読み込みエラー</div>';
-    }
+    try { buildLinkGrid(await fetchSheet('リンク集'), 'links-grid'); }
+    catch(e) { document.getElementById('links-grid').innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-3);grid-column:span 3">読み込みエラー</div>'; }
   }
 
   async function loadFlow() {
-    try {
-      buildLinkGrid(await fetchSheet('フロー別格納資料'), 'flow-grid');
-    } catch(e) {
-      document.getElementById('flow-grid').innerHTML =
-        '<div style="padding:2rem;text-align:center;color:var(--text-3);grid-column:span 3">読み込みエラー</div>';
+    try { buildLinkGrid(await fetchSheet('フロー別格納資料'), 'flow-grid'); }
+    catch(e) { document.getElementById('flow-grid').innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-3);grid-column:span 3">読み込みエラー</div>'; }
+  }
+
+  let allScheduleRows = [];
+  let selectedMonth = currentMonth;
+
+  function renderMonthTabs() {
+    const months = [];
+    for (let i = -1; i <= 3; i++) {
+      let m = currentMonth + i;
+      if (m < 1) m += 12;
+      if (m > 12) m -= 12;
+      months.push(m);
     }
+    document.getElementById('month-tabs').innerHTML = months.map(m =>
+      `<button class="month-tab ${m === selectedMonth ? 'active' : ''}" onclick="selectMonth(${m})">${m}月</button>`
+    ).join('');
+  }
+
+  function renderCal(month) {
+    const y = now.getFullYear();
+    const m = month - 1;
+    document.getElementById('cal-month-label').textContent = `${y}年${month}月`;
+    const evRows = allScheduleRows.filter(r => parseInt(r[5] || '0') === month);
+    const eventDays = new Set(evRows.map(r => {
+      const parts = (r[0] || '').split('/');
+      return parseInt(parts[parts.length - 1]);
+    }));
+    const firstDay = new Date(y, m, 1).getDay();
+    const lastDate = new Date(y, m+1, 0).getDate();
+    const prevLast = new Date(y, m, 0).getDate();
+    let html = '<thead><tr>' + DAYS.map(d => `<th>${d}</th>`).join('') + '</tr></thead><tbody><tr>';
+    let col = 0;
+    for (let i = 0; i < firstDay; i++) {
+      html += `<td class="dim">${prevLast - firstDay + 1 + i}</td>`; col++;
+    }
+    for (let d = 1; d <= lastDate; d++) {
+      if (col === 7) { html += '</tr><tr>'; col = 0; }
+      let cls = (month === currentMonth && d === now.getDate()) ? 'today' : eventDays.has(d) ? 'has-ev' : '';
+      html += `<td class="${cls}">${d}</td>`; col++;
+    }
+    while (col < 7 && col > 0) { html += `<td class="dim"></td>`; col++; }
+    html += '</tr></tbody>';
+    document.getElementById('cal-table').innerHTML = html;
+  }
+
+  function renderEvents(month) {
+    const evRows = allScheduleRows.filter(r => parseInt(r[5] || '0') === month && r[2]);
+    const list = document.getElementById('events-list');
+    document.getElementById('events-title').textContent = `${month}月の予定`;
+    if (evRows.length === 0) {
+      list.innerHTML = '<div class="ev-empty">この月の予定はありません</div>';
+      return;
+    }
+    list.innerHTML = evRows.map(r => {
+      const barColor = EV_COLOR_MAP[r[4]] || 'var(--blue)';
+      return `<div class="ev-item">
+        <div class="ev-time-col">
+          <div class="ev-date-lbl">${r[0] || ''}</div>
+          <div class="ev-time-lbl">${r[1] || ''}</div>
+        </div>
+        <div class="ev-bar" style="background:${barColor}"></div>
+        <div class="ev-body">
+          <div class="ev-name">${r[2] || ''}</div>
+          <div class="ev-sub">${r[3] || ''}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function selectMonth(m) {
+    selectedMonth = m;
+    renderMonthTabs();
+    renderCal(m);
+    renderEvents(m);
   }
 
   async function loadSchedule() {
     try {
-      const rows = await fetchSheet('スケジュール');
-      const list = document.getElementById('events-list');
-      if (rows.length === 0) {
-        list.innerHTML = '<div class="ev-empty">予定はありません</div>';
-        return;
-      }
-      list.innerHTML = rows.filter(r => r[2]).map(r => {
-        const barColor = EV_COLOR_MAP[r[4]] || 'var(--blue)';
-        return `<div class="ev-item">
-          <div class="ev-time-col">
-            <div class="ev-date-lbl">${r[0] || ''}</div>
-            <div class="ev-time-lbl">${r[1] || ''}</div>
-          </div>
-          <div class="ev-bar" style="background:${barColor}"></div>
-          <div class="ev-body">
-            <div class="ev-name">${r[2] || ''}</div>
-            <div class="ev-sub">${r[3] || ''}</div>
-          </div>
-        </div>`;
-      }).join('');
+      allScheduleRows = await fetchSheet('スケジュール');
+      renderMonthTabs();
+      renderCal(selectedMonth);
+      renderEvents(selectedMonth);
     } catch(e) {
       document.getElementById('events-list').innerHTML = '<div class="ev-empty">読み込みエラー</div>';
     }
