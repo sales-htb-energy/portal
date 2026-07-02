@@ -121,39 +121,68 @@ body {
 .link-arrow { margin-left: auto; color: var(--text-3); font-size: 15px; }
 
 /* 申し込みスケジュール */
-.schedule-filter { display: flex; gap: 6px; padding: 14px 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; align-items: center; }
-.filter-label { font-size: 12px; color: var(--text-3); margin-right: 4px; }
+.schedule-filter {
+  display: flex; gap: 8px; padding: 16px 24px;
+  border-bottom: 1px solid var(--border); flex-wrap: wrap; align-items: center;
+}
+.filter-label { font-size: 13px; color: var(--text-3); margin-right: 4px; font-weight: 500; }
 .filter-btn {
-  font-size: 12px; font-weight: 500; padding: 5px 14px;
+  font-size: 13px; font-weight: 500; padding: 6px 16px;
   border-radius: 99px; border: 1px solid var(--border);
   background: transparent; color: var(--text-2); cursor: pointer;
   white-space: nowrap; transition: all 0.15s;
 }
 .filter-btn:hover { background: var(--bg); color: var(--text-1); }
 .filter-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
 .schedule-table-wrap { overflow-x: auto; }
-.schedule-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.schedule-table thead th {
-  font-size: 11px; font-weight: 500; color: var(--text-3);
-  padding: 10px 16px; text-align: left;
-  border-bottom: 1px solid var(--border); background: var(--bg);
-  white-space: nowrap;
+.schedule-table { width: 100%; border-collapse: collapse; }
+.schedule-table colgroup col.col-area { width: 140px; }
+.schedule-table colgroup col.col-supply { width: auto; }
+.schedule-table colgroup col.col-date { width: 130px; }
+
+.schedule-table thead tr {
+  background: var(--bg);
+  border-bottom: 2px solid var(--border);
 }
-.schedule-table thead th.date-col { text-align: center; }
+.schedule-table thead th {
+  font-size: 13px; font-weight: 700; color: var(--text-2);
+  padding: 14px 20px; text-align: left;
+}
+.schedule-table thead th.date-col {
+  text-align: center;
+  border-left: 1px solid var(--border);
+}
+.schedule-table thead th .date-sub {
+  font-size: 11px; font-weight: 400; color: var(--text-3);
+  display: block; margin-top: 2px;
+}
+
 .schedule-table tbody tr { border-bottom: 1px solid var(--border); }
 .schedule-table tbody tr:last-child { border-bottom: none; }
 .schedule-table tbody tr:hover { background: #F8FAFF; }
 .schedule-table tbody tr.hidden { display: none; }
-.schedule-table tbody td { padding: 12px 16px; vertical-align: top; }
+.schedule-table tbody td { padding: 16px 20px; vertical-align: middle; }
+.schedule-table tbody td.date-cell {
+  text-align: center;
+  border-left: 1px solid var(--border);
+}
+
 .area-badge {
-  display: inline-block; font-size: 10px; font-weight: 500;
-  padding: 2px 8px; border-radius: 4px;
+  display: inline-block; font-size: 12px; font-weight: 600;
+  padding: 4px 10px; border-radius: 6px;
   background: #EFF6FF; color: var(--blue); white-space: nowrap;
 }
 .area-badge.all { background: #F0FDF4; color: var(--ok); }
-.supply-text { font-size: 12px; color: var(--text-2); line-height: 1.6; }
-.date-val { font-size: 13px; font-weight: 600; color: var(--blue); text-align: center; display: block; }
-.date-empty { font-size: 12px; color: var(--text-3); text-align: center; display: block; }
+
+.supply-text { font-size: 14px; color: var(--text-1); line-height: 1.7; }
+
+.date-val {
+  display: inline-block;
+  font-size: 15px; font-weight: 700; color: var(--blue);
+  background: #EFF6FF; padding: 4px 12px; border-radius: 6px;
+}
+.date-empty { font-size: 13px; color: var(--text-3); }
 .schedule-empty { padding: 2rem; text-align: center; color: var(--text-3); font-size: 14px; }
 
 @media (max-width: 768px) {
@@ -288,13 +317,20 @@ body {
       </div>
       <div class="schedule-table-wrap">
         <table class="schedule-table">
+          <colgroup>
+            <col class="col-area">
+            <col class="col-supply">
+            <col class="col-date">
+            <col class="col-date">
+            <col class="col-date">
+          </colgroup>
           <thead>
             <tr>
               <th>エリア</th>
               <th>供給区分</th>
-              <th class="date-col">8月開始<br><span style="font-weight:400;font-size:10px">依頼目安</span></th>
-              <th class="date-col">9月開始<br><span style="font-weight:400;font-size:10px">依頼目安</span></th>
-              <th class="date-col">10月開始<br><span style="font-weight:400;font-size:10px">依頼目安</span></th>
+              <th class="date-col">8月開始<span class="date-sub">依頼目安</span></th>
+              <th class="date-col">9月開始<span class="date-sub">依頼目安</span></th>
+              <th class="date-col">10月開始<span class="date-sub">依頼目安</span></th>
             </tr>
           </thead>
           <tbody id="schedule-body">
@@ -426,7 +462,6 @@ body {
     catch(e) { document.getElementById('flow-grid').innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-3);grid-column:span 3">読み込みエラー</div>'; }
   }
 
-  // ===== 申し込みスケジュール =====
   let scheduleRows = [];
 
   function filterSchedule(area, btn) {
@@ -452,7 +487,6 @@ body {
         return;
       }
 
-      // エリア一覧を動的に生成
       const areas = [...new Set(scheduleRows.map(r => (r[0] || '').trim()).filter(Boolean))];
       const existingBtns = filterDiv.querySelectorAll('.filter-btn:not(:first-child)');
       existingBtns.forEach(b => b.remove());
@@ -464,20 +498,20 @@ body {
         filterDiv.appendChild(btn);
       });
 
-      // テーブル行を生成
       tbody.innerHTML = scheduleRows.filter(r => r[0]).map(r => {
         const area = (r[0] || '').trim();
         const isAll = area === '全エリア';
         const badgeClass = isAll ? 'area-badge all' : 'area-badge';
+        const supply = (r[1] || '').replace(/・/g, '<br>・');
         const d8  = r[2] ? `<span class="date-val">${r[2]}</span>` : `<span class="date-empty">—</span>`;
         const d9  = r[3] ? `<span class="date-val">${r[3]}</span>` : `<span class="date-empty">—</span>`;
         const d10 = r[4] ? `<span class="date-val">${r[4]}</span>` : `<span class="date-empty">—</span>`;
         return `<tr data-area="${area}">
           <td><span class="${badgeClass}">${area}</span></td>
-          <td class="supply-text">${(r[1] || '').replace(/・/g, '<br>・')}</td>
-          <td style="text-align:center">${d8}</td>
-          <td style="text-align:center">${d9}</td>
-          <td style="text-align:center">${d10}</td>
+          <td class="supply-text">${supply}</td>
+          <td class="date-cell">${d8}</td>
+          <td class="date-cell">${d9}</td>
+          <td class="date-cell">${d10}</td>
         </tr>`;
       }).join('');
 
