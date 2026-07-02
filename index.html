@@ -120,52 +120,41 @@ body {
 .link-desc { font-size: 12px; color: var(--text-3); margin-top: 2px; }
 .link-arrow { margin-left: auto; color: var(--text-3); font-size: 15px; }
 
-/* スケジュール */
-.month-tabs { display: flex; gap: 6px; padding: 14px 20px; border-bottom: 1px solid var(--border); overflow-x: auto; flex-wrap: wrap; }
-.month-tab { font-size: 13px; font-weight: 500; padding: 6px 16px; border-radius: 99px; border: 1px solid var(--border); background: transparent; color: var(--text-2); cursor: pointer; white-space: nowrap; transition: all 0.15s; }
-.month-tab:hover { background: var(--bg); color: var(--text-1); }
-.month-tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
-.schedule-wrap { display: grid; grid-template-columns: auto 1fr; }
-.cal-panel { padding: 1.5rem; border-right: 1px solid var(--border); min-width: 240px; }
-.cal-nav-month { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 12px; }
-.cal-table { width: 100%; border-collapse: collapse; }
-.cal-table th { text-align: center; font-size: 11px; font-weight: 600; color: var(--text-3); padding: 5px 0; }
-.cal-table td {
-  text-align: center; font-size: 13px; padding: 6px 2px;
-  color: var(--text-2); cursor: pointer; border-radius: 4px; position: relative;
+/* 申し込みスケジュール */
+.schedule-filter { display: flex; gap: 6px; padding: 14px 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; align-items: center; }
+.filter-label { font-size: 12px; color: var(--text-3); margin-right: 4px; }
+.filter-btn {
+  font-size: 12px; font-weight: 500; padding: 5px 14px;
+  border-radius: 99px; border: 1px solid var(--border);
+  background: transparent; color: var(--text-2); cursor: pointer;
+  white-space: nowrap; transition: all 0.15s;
 }
-.cal-table td:hover { background: var(--bg); }
-.cal-table td.today { background: var(--blue); color: #fff; font-weight: 700; border-radius: 6px; }
-.cal-table td.has-ev::after {
-  content: ''; position: absolute; bottom: 1px; left: 50%; transform: translateX(-50%);
-  width: 4px; height: 4px; border-radius: 50%; background: var(--warn);
+.filter-btn:hover { background: var(--bg); color: var(--text-1); }
+.filter-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+.schedule-table-wrap { overflow-x: auto; }
+.schedule-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.schedule-table thead th {
+  font-size: 11px; font-weight: 500; color: var(--text-3);
+  padding: 10px 16px; text-align: left;
+  border-bottom: 1px solid var(--border); background: var(--bg);
+  white-space: nowrap;
 }
-.cal-table td.today.has-ev::after { background: #fff; }
-.cal-table td.selected { background: #EFF6FF; color: var(--blue); font-weight: 700; border-radius: 6px; }
-.cal-table td.selected.has-ev::after { background: var(--blue); }
-.cal-table td.dim { color: var(--border); cursor: default; }
-.cal-table td.dim:hover { background: transparent; }
-.events-panel { padding: 1.5rem; display: flex; flex-direction: column; }
-.events-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-.events-title { font-size: 14px; font-weight: 700; color: var(--text-2); }
-.events-reset {
-  font-size: 12px; color: var(--blue); cursor: pointer;
-  background: none; border: none; padding: 2px 8px;
-  border-radius: 4px; display: none;
+.schedule-table thead th.date-col { text-align: center; }
+.schedule-table tbody tr { border-bottom: 1px solid var(--border); }
+.schedule-table tbody tr:last-child { border-bottom: none; }
+.schedule-table tbody tr:hover { background: #F8FAFF; }
+.schedule-table tbody tr.hidden { display: none; }
+.schedule-table tbody td { padding: 12px 16px; vertical-align: top; }
+.area-badge {
+  display: inline-block; font-size: 10px; font-weight: 500;
+  padding: 2px 8px; border-radius: 4px;
+  background: #EFF6FF; color: var(--blue); white-space: nowrap;
 }
-.events-reset:hover { background: #EFF6FF; }
-.events-reset.visible { display: block; }
-.events-scroll { overflow-y: auto; max-height: 320px; }
-.ev-item { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border); }
-.ev-item:last-child { border-bottom: none; }
-.ev-time-col { text-align: right; min-width: 64px; flex-shrink: 0; }
-.ev-date-lbl { font-size: 11px; color: var(--text-3); font-weight: 500; }
-.ev-time-lbl { font-size: 14px; font-weight: 600; color: var(--text-2); }
-.ev-bar { width: 3px; border-radius: 2px; flex-shrink: 0; margin: 2px 0; }
-.ev-body { flex: 1; }
-.ev-name { font-size: 14px; font-weight: 500; color: var(--text-1); }
-.ev-sub { font-size: 12px; color: var(--text-3); margin-top: 3px; }
-.ev-empty { padding: 2rem; text-align: center; color: var(--text-3); font-size: 14px; }
+.area-badge.all { background: #F0FDF4; color: var(--ok); }
+.supply-text { font-size: 12px; color: var(--text-2); line-height: 1.6; }
+.date-val { font-size: 13px; font-weight: 600; color: var(--blue); text-align: center; display: block; }
+.date-empty { font-size: 12px; color: var(--text-3); text-align: center; display: block; }
+.schedule-empty { padding: 2rem; text-align: center; color: var(--text-3); font-size: 14px; }
 
 @media (max-width: 768px) {
   .topbar { padding: 0 1rem; }
@@ -173,8 +162,6 @@ body {
   .kpi-two-col { grid-template-columns: 1fr; }
   .kpi-segment:first-child { border-right: none; border-bottom: 1px solid var(--border); }
   .links-grid { grid-template-columns: repeat(2, 1fr); }
-  .schedule-wrap { grid-template-columns: 1fr; }
-  .cal-panel { border-right: none; border-bottom: 1px solid var(--border); }
 }
 @media (max-width: 480px) {
   .links-grid { grid-template-columns: 1fr; }
@@ -289,27 +276,31 @@ body {
     </div>
   </section>
 
-  <!-- スケジュール -->
+  <!-- エナリス申し込みスケジュール -->
   <section class="section">
     <div class="sec-head">
-      <h2 class="sec-title">スケジュール</h2>
+      <h2 class="sec-title">エナリス申し込みスケジュール</h2>
     </div>
     <div class="card">
-      <div class="month-tabs" id="month-tabs"></div>
-      <div class="schedule-wrap">
-        <div class="cal-panel">
-          <div class="cal-nav-month" id="cal-month-label"></div>
-          <table class="cal-table" id="cal-table"></table>
-        </div>
-        <div class="events-panel">
-          <div class="events-header">
-            <div class="events-title" id="events-title">月の予定</div>
-            <button class="events-reset" id="events-reset" onclick="resetDayFilter()">全件表示に戻す</button>
-          </div>
-          <div class="events-scroll">
-            <div id="events-list"><div class="ev-empty">読み込み中…</div></div>
-          </div>
-        </div>
+      <div class="schedule-filter" id="schedule-filter">
+        <span class="filter-label">エリア</span>
+        <button class="filter-btn active" onclick="filterSchedule('all', this)">すべて</button>
+      </div>
+      <div class="schedule-table-wrap">
+        <table class="schedule-table">
+          <thead>
+            <tr>
+              <th>エリア</th>
+              <th>供給区分</th>
+              <th class="date-col">8月開始<br><span style="font-weight:400;font-size:10px">依頼目安</span></th>
+              <th class="date-col">9月開始<br><span style="font-weight:400;font-size:10px">依頼目安</span></th>
+              <th class="date-col">10月開始<br><span style="font-weight:400;font-size:10px">依頼目安</span></th>
+            </tr>
+          </thead>
+          <tbody id="schedule-body">
+            <tr><td colspan="5" class="schedule-empty">読み込み中…</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
@@ -350,10 +341,6 @@ body {
     teal:   { bg: '#F0FDFA', fg: '#0D7A6E' },
     red:    { bg: '#FEF2F2', fg: '#DC2626' },
     purple: { bg: '#F5F3FF', fg: '#7C3AED' },
-  };
-  const EV_COLOR_MAP = {
-    blue: 'var(--blue)', yellow: 'var(--warn)', teal: 'var(--teal)',
-    red: 'var(--danger)', green: 'var(--ok)', purple: '#7C3AED',
   };
 
   async function loadNews() {
@@ -439,117 +426,64 @@ body {
     catch(e) { document.getElementById('flow-grid').innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-3);grid-column:span 3">読み込みエラー</div>'; }
   }
 
-  let allScheduleRows = [];
-  let selectedMonth = currentMonth;
-  let selectedDay = null;
+  // ===== 申し込みスケジュール =====
+  let scheduleRows = [];
 
-  function renderMonthTabs() {
-    const months = [];
-    for (let i = -1; i <= 3; i++) {
-      let m = currentMonth + i;
-      if (m < 1) m += 12;
-      if (m > 12) m -= 12;
-      months.push(m);
-    }
-    document.getElementById('month-tabs').innerHTML = months.map(m =>
-      `<button class="month-tab ${m === selectedMonth ? 'active' : ''}" onclick="selectMonth(${m})">${m}月</button>`
-    ).join('');
-  }
-
-  function renderCal(month) {
-    const y = now.getFullYear();
-    const m = month - 1;
-    document.getElementById('cal-month-label').textContent = `${y}年${month}月`;
-    const evRows = allScheduleRows.filter(r => parseInt(r[5] || '0') === month);
-    const eventDays = new Set(evRows.map(r => {
-      const parts = (r[0] || '').split('/');
-      return parseInt(parts[parts.length - 1]);
-    }));
-    const firstDay = new Date(y, m, 1).getDay();
-    const lastDate = new Date(y, m+1, 0).getDate();
-    const prevLast = new Date(y, m, 0).getDate();
-    let html = '<thead><tr>' + DAYS.map(d => `<th>${d}</th>`).join('') + '</tr></thead><tbody><tr>';
-    let col = 0;
-    for (let i = 0; i < firstDay; i++) {
-      html += `<td class="dim">${prevLast - firstDay + 1 + i}</td>`; col++;
-    }
-    for (let d = 1; d <= lastDate; d++) {
-      if (col === 7) { html += '</tr><tr>'; col = 0; }
-      let cls = [];
-      if (month === currentMonth && d === now.getDate()) cls.push('today');
-      if (eventDays.has(d)) cls.push('has-ev');
-      if (selectedDay === d) cls.push('selected');
-      html += `<td class="${cls.join(' ')}" onclick="selectDay(${d})">${d}</td>`; col++;
-    }
-    while (col < 7 && col > 0) { html += `<td class="dim"></td>`; col++; }
-    html += '</tr></tbody>';
-    document.getElementById('cal-table').innerHTML = html;
-  }
-
-  function renderEvents(month, day = null) {
-    let evRows = allScheduleRows.filter(r => parseInt(r[5] || '0') === month && r[2]);
-    const list = document.getElementById('events-list');
-    const title = document.getElementById('events-title');
-    const resetBtn = document.getElementById('events-reset');
-    if (day !== null) {
-      evRows = evRows.filter(r => {
-        const parts = (r[0] || '').split('/');
-        return parseInt(parts[parts.length - 1]) === day;
-      });
-      title.textContent = `${month}月${day}日の予定`;
-      resetBtn.classList.add('visible');
-    } else {
-      title.textContent = `${month}月の予定`;
-      resetBtn.classList.remove('visible');
-    }
-    if (evRows.length === 0) {
-      list.innerHTML = '<div class="ev-empty">予定はありません</div>';
-      return;
-    }
-    list.innerHTML = evRows.map(r => {
-      const barColor = EV_COLOR_MAP[r[4]] || 'var(--blue)';
-      return `<div class="ev-item">
-        <div class="ev-time-col">
-          <div class="ev-date-lbl">${r[0] || ''}</div>
-          <div class="ev-time-lbl">${r[1] || ''}</div>
-        </div>
-        <div class="ev-bar" style="background:${barColor}"></div>
-        <div class="ev-body">
-          <div class="ev-name">${r[2] || ''}</div>
-          <div class="ev-sub">${r[3] || ''}</div>
-        </div>
-      </div>`;
-    }).join('');
-  }
-
-  function selectDay(d) {
-    selectedDay = (selectedDay === d) ? null : d;
-    renderCal(selectedMonth);
-    renderEvents(selectedMonth, selectedDay);
-  }
-
-  function resetDayFilter() {
-    selectedDay = null;
-    renderCal(selectedMonth);
-    renderEvents(selectedMonth);
-  }
-
-  function selectMonth(m) {
-    selectedMonth = m;
-    selectedDay = null;
-    renderMonthTabs();
-    renderCal(m);
-    renderEvents(m);
+  function filterSchedule(area, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#schedule-body tr[data-area]').forEach(row => {
+      if (area === 'all' || row.dataset.area === area) {
+        row.classList.remove('hidden');
+      } else {
+        row.classList.add('hidden');
+      }
+    });
   }
 
   async function loadSchedule() {
     try {
-      allScheduleRows = await fetchSheet('スケジュール');
-      renderMonthTabs();
-      renderCal(selectedMonth);
-      renderEvents(selectedMonth);
+      scheduleRows = await fetchSheet('エナリス申し込みスケジュール');
+      const tbody = document.getElementById('schedule-body');
+      const filterDiv = document.getElementById('schedule-filter');
+
+      if (scheduleRows.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="schedule-empty">データがありません</td></tr>';
+        return;
+      }
+
+      // エリア一覧を動的に生成
+      const areas = [...new Set(scheduleRows.map(r => (r[0] || '').trim()).filter(Boolean))];
+      const existingBtns = filterDiv.querySelectorAll('.filter-btn:not(:first-child)');
+      existingBtns.forEach(b => b.remove());
+      areas.forEach(area => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn';
+        btn.textContent = area;
+        btn.onclick = function() { filterSchedule(area, this); };
+        filterDiv.appendChild(btn);
+      });
+
+      // テーブル行を生成
+      tbody.innerHTML = scheduleRows.filter(r => r[0]).map(r => {
+        const area = (r[0] || '').trim();
+        const isAll = area === '全エリア';
+        const badgeClass = isAll ? 'area-badge all' : 'area-badge';
+        const d8  = r[2] ? `<span class="date-val">${r[2]}</span>` : `<span class="date-empty">—</span>`;
+        const d9  = r[3] ? `<span class="date-val">${r[3]}</span>` : `<span class="date-empty">—</span>`;
+        const d10 = r[4] ? `<span class="date-val">${r[4]}</span>` : `<span class="date-empty">—</span>`;
+        return `<tr data-area="${area}">
+          <td><span class="${badgeClass}">${area}</span></td>
+          <td class="supply-text">${(r[1] || '').replace(/・/g, '<br>・')}</td>
+          <td style="text-align:center">${d8}</td>
+          <td style="text-align:center">${d9}</td>
+          <td style="text-align:center">${d10}</td>
+        </tr>`;
+      }).join('');
+
     } catch(e) {
-      document.getElementById('events-list').innerHTML = '<div class="ev-empty">読み込みエラー</div>';
+      document.getElementById('schedule-body').innerHTML =
+        '<tr><td colspan="5" class="schedule-empty">読み込みエラー</td></tr>';
     }
   }
 
