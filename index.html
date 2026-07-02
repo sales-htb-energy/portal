@@ -176,6 +176,7 @@ body {
 .area-badge.all { background: #F0FDF4; color: var(--ok); }
 
 .supply-text { font-size: 14px; color: var(--text-1); line-height: 1.7; }
+.supply-sub { font-size: 13px; color: var(--text-2); }
 
 .date-val {
   display: inline-block;
@@ -462,6 +463,18 @@ body {
     catch(e) { document.getElementById('flow-grid').innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-3);grid-column:span 3">読み込みエラー</div>'; }
   }
 
+  // ===== 供給区分の整形 =====
+  // 「特高・高圧」はそのまま、3つ目以降の「・」から改行する
+  function formatSupply(text) {
+    // 「・」で分割
+    const parts = text.split('・');
+    if (parts.length <= 2) return text; // 「・」が1つ以下はそのまま
+    // 最初の2つ（「特高」「高圧」）はそのまま結合、3つ目以降は改行
+    const first = parts[0] + '・' + parts[1];
+    const rest = parts.slice(2).map(p => '・' + p).join('<br>');
+    return first + '<br>' + rest;
+  }
+
   let scheduleRows = [];
 
   function filterSchedule(area, btn) {
@@ -502,7 +515,7 @@ body {
         const area = (r[0] || '').trim();
         const isAll = area === '全エリア';
         const badgeClass = isAll ? 'area-badge all' : 'area-badge';
-        const supply = (r[1] || '').replace(/・/g, '<br>・');
+        const supply = formatSupply(r[1] || '');
         const d8  = r[2] ? `<span class="date-val">${r[2]}</span>` : `<span class="date-empty">—</span>`;
         const d9  = r[3] ? `<span class="date-val">${r[3]}</span>` : `<span class="date-empty">—</span>`;
         const d10 = r[4] ? `<span class="date-val">${r[4]}</span>` : `<span class="date-empty">—</span>`;
