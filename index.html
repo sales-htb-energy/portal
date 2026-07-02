@@ -289,18 +289,6 @@ body {
     </div>
   </section>
 
-  <!-- 用途別格納資料 -->
-  <section class="section">
-    <div class="sec-head">
-      <h2 class="sec-title">用途別格納資料</h2>
-    </div>
-    <div class="card">
-      <div class="links-grid" id="usage-grid">
-        <div style="padding:2rem;text-align:center;color:var(--text-3);font-size:14px;grid-column:span 3">読み込み中…</div>
-      </div>
-    </div>
-  </section>
-
   <!-- スケジュール -->
   <section class="section">
     <div class="sec-head">
@@ -451,12 +439,6 @@ body {
     catch(e) { document.getElementById('flow-grid').innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-3);grid-column:span 3">読み込みエラー</div>'; }
   }
 
-  async function loadUsage() {
-    try { buildLinkGrid(await fetchSheet('用途別格納資料'), 'usage-grid'); }
-    catch(e) { document.getElementById('usage-grid').innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-3);grid-column:span 3">読み込みエラー</div>'; }
-  }
-
-  // ===== スケジュール =====
   let allScheduleRows = [];
   let selectedMonth = currentMonth;
   let selectedDay = null;
@@ -575,7 +557,6 @@ body {
   loadKpi();
   loadLinks();
   loadFlow();
-  loadUsage();
   loadSchedule();
 </script>
 </body>
